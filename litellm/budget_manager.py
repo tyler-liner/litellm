@@ -61,9 +61,7 @@ class BudgetManager:
             response = requests.post(url, headers=self.headers, json=data)
             response = response.json()
             if response["status"] == "error":
-                self.user_dict = (
-                    {}
-                )  # assume this means the user dict hasn't been stored yet
+                self.user_dict = {}  # assume this means the user dict hasn't been stored yet
             else:
                 self.user_dict = response["data"]
 
@@ -146,9 +144,7 @@ class BudgetManager:
                 "Either a chat completion object or the text response needs to be passed in. Learn more - https://docs.litellm.ai/docs/budget_manager"
             )
 
-        self.user_dict[user]["current_cost"] = cost + self.user_dict[user].get(
-            "current_cost", 0
-        )
+        self.user_dict[user]["current_cost"] = cost + self.user_dict[user].get("current_cost", 0)
         if "model_cost" in self.user_dict[user]:
             self.user_dict[user]["model_cost"][model] = cost + self.user_dict[user][
                 "model_cost"
@@ -197,10 +193,11 @@ class BudgetManager:
                 self.reset_on_duration(user)
 
     def _save_data_thread(self):
-        thread = threading.Thread(
-            target=self.save_data
-        )  # [Non-Blocking]: saves data without blocking execution
-        thread.start()
+        # thread = threading.Thread(
+        #     target=self.save_data
+        # )  # [Non-Blocking]: saves data without blocking execution
+        # thread.start()
+        return None
 
     def save_data(self):
         if self.client_type == "local":
@@ -208,9 +205,7 @@ class BudgetManager:
 
             # save the user dict
             with open("user_cost.json", "w") as json_file:
-                json.dump(
-                    self.user_dict, json_file, indent=4
-                )  # Indent for pretty formatting
+                json.dump(self.user_dict, json_file, indent=4)  # Indent for pretty formatting
             return {"status": "success"}
         elif self.client_type == "hosted":
             url = self.api_base + "/set_budget"

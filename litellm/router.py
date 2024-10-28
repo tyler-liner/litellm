@@ -3687,10 +3687,10 @@ class Router:
                             )
                         )
                         ## LOGGING
-                        threading.Thread(
-                            target=logging_obj.failure_handler,
-                            args=(e, traceback.format_exc()),
-                        ).start()  # log response
+                        # threading.Thread(
+                        #     target=logging_obj.failure_handler,
+                        #     args=(e, traceback.format_exc()),
+                        # ).start()  # log response
                     _set_cooldown_deployments(
                         litellm_router_instance=self,
                         exception_status=e.status_code,
@@ -3710,10 +3710,10 @@ class Router:
                             )
                         )
                         ## LOGGING
-                        threading.Thread(
-                            target=logging_obj.failure_handler,
-                            args=(e, traceback.format_exc()),
-                        ).start()  # log response
+                        # threading.Thread(
+                        #     target=logging_obj.failure_handler,
+                        #     args=(e, traceback.format_exc()),
+                        # ).start()  # log response
                     raise e
 
     def _generate_model_id(self, model_group: str, litellm_params: dict):
@@ -5129,10 +5129,10 @@ class Router:
 
                 if logging_obj is not None:
                     ## LOGGING
-                    threading.Thread(
-                        target=logging_obj.failure_handler,
-                        args=(e, traceback_exception),
-                    ).start()  # log response
+                    # threading.Thread(
+                    #     target=logging_obj.failure_handler,
+                    #     args=(e, traceback_exception),
+                    # ).start()  # log response
                     # Handle any exceptions that might occur during streaming
                     asyncio.create_task(
                         logging_obj.async_failure_handler(e, traceback_exception)  # type: ignore

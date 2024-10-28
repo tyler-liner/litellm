@@ -278,10 +278,10 @@ class LLMCachingHandler:
                         is_async=False,
                     )
 
-                    threading.Thread(
-                        target=logging_obj.success_handler,
-                        args=(cached_result, start_time, end_time, cache_hit),
-                    ).start()
+                    # threading.Thread(
+                    #     target=logging_obj.success_handler,
+                    #     args=(cached_result, start_time, end_time, cache_hit),
+                    # ).start()
                     cache_key = litellm.cache._get_preset_cache_key_from_kwargs(
                         **kwargs
                     )
@@ -447,10 +447,10 @@ class LLMCachingHandler:
                 cached_result, start_time, end_time, cache_hit
             )
         )
-        threading.Thread(
-            target=logging_obj.success_handler,
-            args=(cached_result, start_time, end_time, cache_hit),
-        ).start()
+        # threading.Thread(
+        #     target=logging_obj.success_handler,
+        #     args=(cached_result, start_time, end_time, cache_hit),
+        # ).start()
 
     async def _retrieve_from_cache(
         self, call_type: str, kwargs: Dict[str, Any], args: Tuple[Any, ...]
@@ -682,12 +682,12 @@ class LLMCachingHandler:
                     asyncio.create_task(
                         litellm.cache.async_add_cache_pipeline(result, **kwargs)
                     )
-                elif isinstance(litellm.cache.cache, S3Cache):
-                    threading.Thread(
-                        target=litellm.cache.add_cache,
-                        args=(result,),
-                        kwargs=kwargs,
-                    ).start()
+                # elif isinstance(litellm.cache.cache, S3Cache):
+                #     threading.Thread(
+                #         target=litellm.cache.add_cache,
+                #         args=(result,),
+                #         kwargs=kwargs,
+                #     ).start()
                 else:
                     asyncio.create_task(
                         litellm.cache.async_add_cache(

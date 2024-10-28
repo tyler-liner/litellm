@@ -94,7 +94,6 @@ from litellm.types.llms.openai import (
     ChatCompletionToolParamFunctionChunk,
 )
 from litellm.types.rerank import RerankResponse
-from litellm.types.utils import FileTypes  # type: ignore
 from litellm.types.utils import (
     OPENAI_RESPONSE_HEADERS,
     CallTypes,
@@ -105,6 +104,7 @@ from litellm.types.utils import (
     Delta,
     Embedding,
     EmbeddingResponse,
+    FileTypes,  # type: ignore
     Function,
     ImageResponse,
     Message,
@@ -942,9 +942,9 @@ def client(original_function):  # noqa: PLR0915
 
             # LOG SUCCESS - handle streaming success logging in the _next_ object, remove `handle_success` once it's deprecated
             verbose_logger.info("Wrapper: Completed Call, calling success_handler")
-            threading.Thread(
-                target=logging_obj.success_handler, args=(result, start_time, end_time)
-            ).start()
+            # threading.Thread(
+            #     target=logging_obj.success_handler, args=(result, start_time, end_time)
+            # ).start()
             # RETURN RESULT
             if hasattr(result, "_hidden_params"):
                 result._hidden_params["model_id"] = kwargs.get("model_info", {}).get(
@@ -1148,10 +1148,10 @@ def client(original_function):  # noqa: PLR0915
             asyncio.create_task(
                 logging_obj.async_success_handler(result, start_time, end_time)
             )
-            threading.Thread(
-                target=logging_obj.success_handler,
-                args=(result, start_time, end_time),
-            ).start()
+            # threading.Thread(
+            #     target=logging_obj.success_handler,
+            #     args=(result, start_time, end_time),
+            # ).start()
 
             # REBUILD EMBEDDING CACHING
             if (
@@ -7521,10 +7521,10 @@ class CustomStreamWrapper:
                     if response is None:
                         continue
                     ## LOGGING
-                    threading.Thread(
-                        target=self.run_success_logging_and_cache_storage,
-                        args=(response, cache_hit),
-                    ).start()  # log response
+                    # threading.Thread(
+                    #     target=self.run_success_logging_and_cache_storage,
+                    #     args=(response, cache_hit),
+                    # ).start()  # log response
                     choice = response.choices[0]
                     if isinstance(choice, StreamingChoices):
                         self.response_uptil_now += choice.delta.get("content", "") or ""
@@ -7575,10 +7575,10 @@ class CustomStreamWrapper:
                             getattr(complete_streaming_response, "usage"),
                         )
                     ## LOGGING
-                    threading.Thread(
-                        target=self.logging_obj.success_handler,
-                        args=(response, None, None, cache_hit),
-                    ).start()  # log response
+                    # threading.Thread(
+                    #     target=self.logging_obj.success_handler,
+                    #     args=(response, None, None, cache_hit),
+                    # ).start()  # log response
                     self.sent_stream_usage = True
                     return response
                 raise  # Re-raise StopIteration
@@ -7589,17 +7589,17 @@ class CustomStreamWrapper:
                     usage = calculate_total_usage(chunks=self.chunks)
                     processed_chunk._hidden_params["usage"] = usage
                 ## LOGGING
-                threading.Thread(
-                    target=self.run_success_logging_and_cache_storage,
-                    args=(processed_chunk, cache_hit),
-                ).start()  # log response
+                # threading.Thread(
+                #     target=self.run_success_logging_and_cache_storage,
+                #     args=(processed_chunk, cache_hit),
+                # ).start()  # log response
                 return processed_chunk
         except Exception as e:
             traceback_exception = traceback.format_exc()
             # LOG FAILURE - handle streaming failure logging in the _next_ object, remove `handle_failure` once it's deprecated
-            threading.Thread(
-                target=self.logging_obj.failure_handler, args=(e, traceback_exception)
-            ).start()
+            # threading.Thread(
+            #     target=self.logging_obj.failure_handler, args=(e, traceback_exception)
+            # ).start()
             if isinstance(e, OpenAIError):
                 raise e
             else:
@@ -7689,10 +7689,10 @@ class CustomStreamWrapper:
                         continue
                     ## LOGGING
                     ## LOGGING
-                    threading.Thread(
-                        target=self.logging_obj.success_handler,
-                        args=(processed_chunk, None, None, cache_hit),
-                    ).start()  # log response
+                    # threading.Thread(
+                    #     target=self.logging_obj.success_handler,
+                    #     args=(processed_chunk, None, None, cache_hit),
+                    # ).start()  # log response
                     asyncio.create_task(
                         self.logging_obj.async_success_handler(
                             processed_chunk, cache_hit=cache_hit
@@ -7750,10 +7750,10 @@ class CustomStreamWrapper:
                         if processed_chunk is None:
                             continue
                         ## LOGGING
-                        threading.Thread(
-                            target=self.logging_obj.success_handler,
-                            args=(processed_chunk, None, None, cache_hit),
-                        ).start()  # log processed_chunk
+                        # threading.Thread(
+                        #     target=self.logging_obj.success_handler,
+                        #     args=(processed_chunk, None, None, cache_hit),
+                        # ).start()  # log processed_chunk
                         asyncio.create_task(
                             self.logging_obj.async_success_handler(
                                 processed_chunk, cache_hit=cache_hit
@@ -7792,10 +7792,10 @@ class CustomStreamWrapper:
                             getattr(complete_streaming_response, "usage"),
                         )
                     ## LOGGING
-                    threading.Thread(
-                        target=self.logging_obj.success_handler,
-                        args=(response, None, None, cache_hit),
-                    ).start()  # log response
+                    # threading.Thread(
+                    #     target=self.logging_obj.success_handler,
+                    #     args=(response, None, None, cache_hit),
+                    # ).start()  # log response
                     asyncio.create_task(
                         self.logging_obj.async_success_handler(
                             response, cache_hit=cache_hit
@@ -7808,10 +7808,10 @@ class CustomStreamWrapper:
                 self.sent_last_chunk = True
                 processed_chunk = self.finish_reason_handler()
                 ## LOGGING
-                threading.Thread(
-                    target=self.logging_obj.success_handler,
-                    args=(processed_chunk, None, None, cache_hit),
-                ).start()  # log response
+                # threading.Thread(
+                #     target=self.logging_obj.success_handler,
+                #     args=(processed_chunk, None, None, cache_hit),
+                # ).start()  # log response
                 asyncio.create_task(
                     self.logging_obj.async_success_handler(
                         processed_chunk, cache_hit=cache_hit
@@ -7837,10 +7837,10 @@ class CustomStreamWrapper:
                             getattr(complete_streaming_response, "usage"),
                         )
                     ## LOGGING
-                    threading.Thread(
-                        target=self.logging_obj.success_handler,
-                        args=(response, None, None, cache_hit),
-                    ).start()  # log response
+                    # threading.Thread(
+                    #     target=self.logging_obj.success_handler,
+                    #     args=(response, None, None, cache_hit),
+                    # ).start()  # log response
                     asyncio.create_task(
                         self.logging_obj.async_success_handler(
                             response, cache_hit=cache_hit
@@ -7853,10 +7853,10 @@ class CustomStreamWrapper:
                 self.sent_last_chunk = True
                 processed_chunk = self.finish_reason_handler()
                 ## LOGGING
-                threading.Thread(
-                    target=self.logging_obj.success_handler,
-                    args=(processed_chunk, None, None, cache_hit),
-                ).start()  # log response
+                # threading.Thread(
+                #     target=self.logging_obj.success_handler,
+                #     args=(processed_chunk, None, None, cache_hit),
+                # ).start()  # log response
                 asyncio.create_task(
                     self.logging_obj.async_success_handler(
                         processed_chunk, cache_hit=cache_hit
@@ -7871,10 +7871,10 @@ class CustomStreamWrapper:
             )
             if self.logging_obj is not None:
                 ## LOGGING
-                threading.Thread(
-                    target=self.logging_obj.failure_handler,
-                    args=(e, traceback_exception),
-                ).start()  # log response
+                # threading.Thread(
+                #     target=self.logging_obj.failure_handler,
+                #     args=(e, traceback_exception),
+                # ).start()  # log response
                 # Handle any exceptions that might occur during streaming
                 asyncio.create_task(
                     self.logging_obj.async_failure_handler(e, traceback_exception)
@@ -7884,10 +7884,10 @@ class CustomStreamWrapper:
             traceback_exception = traceback.format_exc()
             if self.logging_obj is not None:
                 ## LOGGING
-                threading.Thread(
-                    target=self.logging_obj.failure_handler,
-                    args=(e, traceback_exception),
-                ).start()  # log response
+                # threading.Thread(
+                #     target=self.logging_obj.failure_handler,
+                #     args=(e, traceback_exception),
+                # ).start()  # log response
                 # Handle any exceptions that might occur during streaming
                 asyncio.create_task(
                     self.logging_obj.async_failure_handler(e, traceback_exception)  # type: ignore

@@ -907,13 +907,13 @@ class ProxyLogging:
                     traceback_exception=traceback.format_exc(),
                 )
 
-                threading.Thread(
-                    target=litellm_logging_obj.failure_handler,
-                    args=(
-                        original_exception,
-                        traceback.format_exc(),
-                    ),
-                ).start()
+                # threading.Thread(
+                #     target=litellm_logging_obj.failure_handler,
+                #     args=(
+                #         original_exception,
+                #         traceback.format_exc(),
+                #     ),
+                # ).start()
 
         for callback in litellm.callbacks:
             try:

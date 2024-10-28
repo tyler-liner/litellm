@@ -49,15 +49,15 @@ class PassThroughEndpointLogging:
             standard_logging_response_object = StandardPassThroughResponseObject(
                 response=httpx_response.text
             )
-            threading.Thread(
-                target=logging_obj.success_handler,
-                args=(
-                    standard_logging_response_object,
-                    start_time,
-                    end_time,
-                    cache_hit,
-                ),
-            ).start()
+            # threading.Thread(
+            #     target=logging_obj.success_handler,
+            #     args=(
+            #         standard_logging_response_object,
+            #         start_time,
+            #         end_time,
+            #         cache_hit,
+            #     ),
+            # ).start()
             await logging_obj.async_success_handler(
                 result=(
                     json.dumps(result)
